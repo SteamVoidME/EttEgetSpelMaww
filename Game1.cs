@@ -58,13 +58,15 @@ namespace EttEgetSpel
 
             // TODO: Add your update logic here
 
-            if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Window.ClientBounds.Width - myship.Width))
+            if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Window.ClientBounds.Width - myship.Width) || keyboardState.IsKeyDown(Keys.S) && (myship_pos.Y >= Window.ClientBounds.Height - myship.Height))
             {
                 myship_speed.X = 2.5f;
+                myship_speed.Y = 2.5f;
             }
-            else if (myship_pos.X >= Window.ClientBounds.Width - myship.Width)
+            else if (myship_pos.X >= Window.ClientBounds.Width - myship.Width || myship_pos.Y >= Window.ClientBounds.Height - myship.Height)
             {
                 myship_speed.X = 0;
+                myship_speed.Y = 0;
             }
             base.Update(gameTime);
         }
@@ -75,7 +77,7 @@ namespace EttEgetSpel
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(myship, myship_pos, Color.White);
+            spriteBatch.Draw(myship, myship_pos, Color.SkyBlue);
             spriteBatch.End();
             base.Draw(gameTime);
 
