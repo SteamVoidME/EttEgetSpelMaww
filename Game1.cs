@@ -24,8 +24,8 @@ namespace EttEgetSpel
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            myship_pos.X = 100;
-            myship_pos.Y = 100;
+            myship_pos.X = 365;
+            myship_pos.Y = 210;
             myship_speed.X = 2.5f;
             myship_speed.Y = 2.5f;
             base.Initialize();
@@ -58,16 +58,21 @@ namespace EttEgetSpel
 
             // TODO: Add your update logic here
 
-            if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Window.ClientBounds.Width - myship.Width) || keyboardState.IsKeyDown(Keys.S) && (myship_pos.Y >= Window.ClientBounds.Height - myship.Height))
+            if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Window.ClientBounds.Width - myship.Width) || keyboardState.IsKeyDown(Keys.W) && (myship_pos.Y >= Window.ClientBounds.Height - myship.Height))
             {
-                myship_speed.X = 2.5f;
-                myship_speed.Y = 2.5f;
+                myship_speed.X = 3.5f;
+                myship_speed.Y = 3.5f;
             }
-            else if (myship_pos.X >= Window.ClientBounds.Width - myship.Width || myship_pos.Y >= Window.ClientBounds.Height - myship.Height)
+            else if ((myship_pos.X >= Window.ClientBounds.Width - myship.Width) || myship_pos.Y >= Window.ClientBounds.Height - myship.Height)
             {
                 myship_speed.X = 0;
-                myship_speed.Y = 0;
+                myship_speed.Y = 0; 
             }
+            
+
+
+
+
             base.Update(gameTime);
         }
 
@@ -77,7 +82,7 @@ namespace EttEgetSpel
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(myship, myship_pos, Color.SkyBlue);
+            spriteBatch.Draw(myship, myship_pos, Color.BlueViolet);
             spriteBatch.End();
             base.Draw(gameTime);
 
