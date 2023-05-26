@@ -3,19 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 
 
 namespace EttEgetSpel
 {
     public class Game1 : Game
-    {
+    {   
+        bool hit;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
         Texture2D myship;
         Texture2D Coin;
         Texture2D Slime;
-        Vector2  coin_pos, slimePos, slimeSpeed; 
+        Vector2  coin_pos, slimePos, slimeSpeed;
+        
        
 
         List<Vector2> coinPosList = new List<Vector2>();
@@ -36,8 +39,8 @@ namespace EttEgetSpel
             Globals.WindowHeight = Window.ClientBounds.Height;
             Globals.WindowWidth = Window.ClientBounds.Width;
 
-            slimeSpeed.X = 5;
-            slimeSpeed.Y = 0;
+            slimeSpeed.X = 2;
+            slimeSpeed.Y = 2;
             Random slump = new Random();
             for (int i = 0; i  < 5; i++) 
             {
@@ -65,38 +68,24 @@ namespace EttEgetSpel
             Coin = Content.Load<Texture2D>("Sprites/Bit Coin sprite");
             Slime = Content.Load<Texture2D>("Sprites/Slime1");
         }
-
-        protected override void Update(GameTime gameTime)
+                                      //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        protected override void Update(GameTime gameTime) 
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             move.Movement();
-            /*
-            KeyboardState keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.D))
-                myship_pos.X = myship_pos.X + myship_speed.X;
-            if (keyboardState.IsKeyDown(Keys.A))
-                myship_pos.X = myship_pos.X - myship_speed.X;
-            if (keyboardState.IsKeyDown(Keys.W))
-                myship_pos.Y = myship_pos.Y - myship_speed.Y;
-            if (keyboardState.IsKeyDown(Keys.S))
-                myship_pos.Y = myship_pos.Y + myship_speed.Y;
 
-            // TODO: Add your update logic here
-            
-            if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Window.ClientBounds.Width - myship.Width) || keyboardState.IsKeyDown(Keys.W) && (myship_pos.Y >= Window.ClientBounds.Height - myship.Height) || keyboardState.IsKeyDown(Keys.D) && (myship_pos.X <= 0) || keyboardState.IsKeyDown(Keys.S) && (myship_pos.Y <= 0))
+
+
+            Globals.RecMyShip = new Rectangle((int) Globals.Myship_pos.X, (int) Globals.Myship_pos.Y, Globals.Myship.Width, Globals.Myship.Height);
+            Globals.RecCoin = new Rectangle((int) Globals.Coin_pos.X, (int)Globals.Coin_pos.Y, Globals.Coin.Width, Globals.Coin.Height);
+            hit = Globals.RecMyShip.Intersects(Globals.RecCoin);
+            bool CheckCollision(Rectangle player, Rectangle mynt)
             {
-                myship_speed.X = 3.5f;
-                myship_speed.Y = 3.5f;
+                return player.Intersects(mynt);
             }
-            else if ((myship_pos.X >= Window.ClientBounds.Width - myship.Width) || myship_pos.Y >= Window.ClientBounds.Height - myship.Height || myship_pos.X <= 0 || myship_pos.Y <= 0)
-            {
-                myship_speed.X = 0;
-                myship_speed.Y = 0; 
-            }
-            */
             Random slump = new Random();
             for (int i = 0; i < slimePosList.Count; i++)
             {
@@ -109,10 +98,6 @@ namespace EttEgetSpel
                 }
             }
             
-
-
-
-
             base.Update(gameTime);
         }
 
@@ -121,15 +106,15 @@ namespace EttEgetSpel
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             spriteBatch.Draw(Globals.Myship, Globals.Myship_pos, Color.BlueViolet);
-            foreach (Vector2 cn in coinPosList) 
+            foreach (Vector2 coinPos in coinPosList) 
             { 
-                spriteBatch.Draw(Coin, cn, Color.White);
+                spriteBatch.Draw(Coin, new Rectangle(coinPos.ToPoint(), new Point(30, 30)), Color.White);
             }
-            foreach (Vector2 cn in slimePosList)
+            foreach (Vector2 slimePos in slimePosList)
             {
-                spriteBatch.Draw (Slime, cn, Color.White);
+                spriteBatch.Draw (Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
                
 
             }
