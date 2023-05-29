@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Security.Principal;
 
@@ -12,6 +13,7 @@ public static class Globals
     static Texture2D myship, coin;
 
     static Rectangle recMyShip, recCoin;
+    
 
     public static Texture2D Myship
     {
