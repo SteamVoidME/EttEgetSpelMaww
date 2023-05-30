@@ -10,12 +10,10 @@ namespace EttEgetSpel
 {
     public class Game1 : Game
     {
-        bool hit;
+        
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
-        Texture2D myship;
-        Texture2D Coin;
-        Texture2D Slime;
+        
         Vector2 coin_pos, slimePos, slimeSpeed;
 
 
@@ -65,7 +63,7 @@ namespace EttEgetSpel
 
             Globals.Myship = Content.Load<Texture2D>("Sprites/Ship");
             Globals.Coin = Content.Load<Texture2D>("Sprites/Bit Coin sprite");
-            Slime = Content.Load<Texture2D>("Sprites/Slime1");
+            Globals.Slime = Content.Load<Texture2D>("Sprites/Slime1");
         }
                                                                                                          //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         protected override void Update(GameTime gameTime)
@@ -75,12 +73,10 @@ namespace EttEgetSpel
 
             move.Movement();
 
-
-
-                                                                                                                                                //Hit
+            //Hit
             Globals.RecMyShip = new Rectangle((int)Globals.Myship_pos.X, (int)Globals.Myship_pos.Y, Globals.Myship.Width, Globals.Myship.Height);
             Globals.RecCoin = new Rectangle((int)Globals.Coin_pos.X, (int)Globals.Coin_pos.Y, Globals.Coin.Width, Globals.Coin.Height);
-            hit = Globals.RecMyShip.Intersects(Globals.RecCoin) || Globals.RecCoin.Intersects(Globals.RecCoin);
+            
 
             
             foreach (Vector2 coin in coinPosList.ToList())
@@ -95,8 +91,9 @@ namespace EttEgetSpel
 
                 if (Globals.RecCoin.Intersects(Globals.RecCoin))
                 {
-                    coinPosList.Remove(coin);
+                    
                 }
+
             }
 
 
@@ -118,6 +115,8 @@ namespace EttEgetSpel
             base.Update(gameTime);
         }
 
+        
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -131,7 +130,7 @@ namespace EttEgetSpel
             }
             foreach (Vector2 slimePos in slimePosList)
             {
-                spriteBatch.Draw(Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
+                spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
 
 
             }

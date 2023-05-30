@@ -10,8 +10,7 @@ public static class Globals
 {
     static Vector2 myship_pos = new Vector2(0, 0), myshipSpeed, coin_pos = new Vector2(0, 0);
     static int windowWidth, windowHeight;
-    static Texture2D myship, coin;
-
+    static Texture2D myship, coin, slime;
     static Rectangle recMyShip, recCoin;
     
 
@@ -60,5 +59,10 @@ public static class Globals
     {
         get { return coin_pos; }
         set { coin_pos = value; }
+    }
+    public static Texture2D Slime
+    {
+        get { return slime; }
+        set { slime = value; }
     }
 }
