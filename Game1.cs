@@ -14,9 +14,9 @@ namespace EttEgetSpel
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
         int points = 0;
-
+        Texture2D healthBarTex;
         Vector2 coin_pos, slimePos, slimeSpeed;
-
+        double timeSinceLastDamage;
 
 
         List<Vector2> coinPosList = new List<Vector2>();
@@ -65,16 +65,20 @@ namespace EttEgetSpel
 
             // TODO: use this.Content to load your game content here
             gameFont = Content.Load<SpriteFont>("Utskrift/GameFont3");
-            Globals.Myship = Content.Load<Texture2D>("Sprites/Ship");
+            Globals.Myship = Content.Load<Texture2D>("Sprites/Illuminati");
             Globals.Coin = Content.Load<Texture2D>("Sprites/Bit Coin sprite");
             Globals.Slime = Content.Load<Texture2D>("Sprites/Slime1");
             Globals.Bullet = Content.Load<Texture2D>("Sprites/BulletGreen");
+            healthBarTex = new Texture2D(GraphicsDevice, 1, 1);
+            healthBarTex.SetData(new Color[] { Color.Red });
         }
                                                                                                          //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         protected override void Update(GameTime gameTime)
         {
+            Globals.RecMyShip = new Rectangle((int)Globals.Myship_pos.X, (int)Globals.Myship_pos.Y, Globals.Myship.Width, Globals.Myship.Height);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
 
             bullet.SpawnBullet(gameTime);
             move.Movement();
@@ -87,7 +91,8 @@ namespace EttEgetSpel
             
             foreach (Vector2 coin in coinPosList.ToList())
             {
-                Globals.RecMyShip = new Rectangle((int)Globals.Myship_pos.X, (int)Globals.Myship_pos.Y, Globals.Myship.Width, Globals.Myship.Height);
+                
+
                 Globals.RecCoin = new Rectangle((int)coin.X, (int)coin.Y, Globals.Coin.Width, Globals.Coin.Height);
                 
                 if (Globals.RecMyShip.Intersects(Globals.RecCoin))
@@ -96,11 +101,18 @@ namespace EttEgetSpel
                     points += 10;
                 }
 
-                if (Globals.RecCoin.Intersects(Globals.RecCoin))
-                {
-                    
-                }
+               
 
+            }
+            foreach (Vector2 slime in slimePosList.ToList())
+            {
+                Globals.RecSlime = new Rectangle((int)slime.X, (int)slime.Y, Globals.Slime.Width, Globals.Slime.Height);
+
+                if (Globals.RecMyShip.Intersects(Globals.RecSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 180)))
+                {
+                    Globals.Health -= 10;
+                    timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds; 
+                }
             }
 
 
@@ -141,32 +153,43 @@ namespace EttEgetSpel
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            spriteBatch.Draw(Globals.Myship, Globals.Myship_pos, Color.BlueViolet);
+            
+            if(Globals.Health > 0)
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+                spriteBatch.Draw(Globals.Myship, Globals.Myship_pos, Color.White);
+                foreach (Vector2 coinPos in coinPosList)
+                {
+                    spriteBatch.Draw(Globals.Coin, new Rectangle(coinPos.ToPoint(), new Point(30, 30)), Color.White);
+                }
+                foreach (Vector2 slimePos in slimePosList)
+                {
+                    spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
 
-            foreach (Vector2 coinPos in coinPosList)
-            {
-                spriteBatch.Draw(Globals.Coin, new Rectangle(coinPos.ToPoint(), new Point(30, 30)), Color.White);
-            }
-            foreach (Vector2 slimePos in slimePosList)
-            {
-                spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
 
-
+                }
+                for (int i = 0; i < slimePosList.Count; i++)
+                {
+                    slimePosList[i] = slimePosList[i] + slimeSpeed;
+                }
+                foreach (Vector2 bullets in Globals.BulletPosList)
+                {
+                    spriteBatch.Draw(Globals.Bullet, bullets, Color.White);
+                }
+                spriteBatch.DrawString(gameFont, "Points: " + points, new Vector2(10, 10), Color.White);
+                spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
+                spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
+                
+                
             }
-            for (int i = 0; i < slimePosList.Count; i++)
+            else
             {
-                slimePosList[i] = slimePosList[i] + slimeSpeed;
+                GraphicsDevice.Clear(Color.Black);
             }
-            foreach(Vector2 bullets in Globals.BulletPosList)
-            {
-                spriteBatch.Draw(Globals.Bullet, bullets, Color.White);
-            }
-            spriteBatch.DrawString(gameFont, "Points: " + points, new Vector2(10, 10), Color.White);
-            spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White); ;
             spriteBatch.End();
             base.Draw(gameTime);
 

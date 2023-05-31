@@ -15,20 +15,20 @@ public class Bullet
 
 	public Bullet()
 	{
-		bulletSpeed.Y = 2f;
+		bulletSpeed.Y = 6f;
 		bulletSpeed.X = 0;
 		Globals.BulletSpeed = bulletSpeed;
 	}
 	public void SpawnBullet(GameTime gameTime)
 	{
         MouseState mouseState = Mouse.GetState();
-        if (mouseState.LeftButton == ButtonState.Pressed && gameTime.TotalGameTime.Milliseconds > timeSinceLastBullet + 300)
+        if (mouseState.LeftButton == ButtonState.Pressed && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastBullet + 180)))
 		{
 			bulletPos.X = Globals.Myship_pos.X + Globals.Myship.Width / 2;
             bulletPos.Y = Globals.Myship_pos.Y;
 			Globals.BulletPosList.Add(bulletPos);
 
-			timeSinceLastBullet = gameTime.TotalGameTime.Milliseconds;
+			timeSinceLastBullet = gameTime.TotalGameTime.TotalMilliseconds;
         }
 
 
