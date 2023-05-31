@@ -8,16 +8,22 @@ using System.Security.Principal;
 
 public static class Globals
 {
-    static Vector2 myship_pos = new Vector2(0, 0), myshipSpeed, coin_pos = new Vector2(0, 0);
-    static int windowWidth, windowHeight;
-    static Texture2D myship, coin, slime;
+    static Vector2 myship_pos = new Vector2(0, 0), myshipSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed;
+    static int windowWidth, windowHeight, health = 100;
+    static Texture2D myship, coin, slime, bullet;
     static Rectangle recMyShip, recCoin;
-    
+    static List<Vector2> bulletPosList = new List<Vector2>();
+
 
     public static Texture2D Myship
     {
         get { return myship; }
         set { myship = value; }
+    }
+    public static Texture2D Bullet
+    {
+        get { return bullet; }
+        set { bullet = value; }
     }
     public static int WindowWidth
     {
@@ -64,5 +70,25 @@ public static class Globals
     {
         get { return slime; }
         set { slime = value; }
+    }
+    public static int Health
+    {
+        get { return health; }
+        set { health = value; }
+    }
+    public static Vector2 BulletPos
+    {
+        get { return bulletPos; }
+        set { bulletPos = value; }
+    }
+    public static List<Vector2> BulletPosList
+    {
+        get { return bulletPosList; }
+        set { bulletPosList = value; }
+    }
+    public static Vector2 BulletSpeed
+    {
+        get { return bulletSpeed; }
+        set { bulletSpeed = value; }
     }
 }
