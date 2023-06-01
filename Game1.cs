@@ -69,6 +69,7 @@ namespace EttEgetSpel
             Globals.Coin = Content.Load<Texture2D>("Sprites/Bit Coin sprite");
             Globals.Slime = Content.Load<Texture2D>("Sprites/Slime1");
             Globals.Bullet = Content.Load<Texture2D>("Sprites/BulletGreen");
+            Globals.GameOver = Content.Load<Texture2D>("Sprites/GameOver");
             healthBarTex = new Texture2D(GraphicsDevice, 1, 1);
             healthBarTex.SetData(new Color[] { Color.Red });
         }
@@ -129,8 +130,20 @@ namespace EttEgetSpel
                     slimePos.Y = slump.Next(0, Window.ClientBounds.Height - 50);
                     slimePosList[i] = slimePos;
                 }
+
             }
-            for(int i = 0; i < Globals.BulletPosList.Count; i++)
+            if ((slimePos.X >= Globals.WindowWidth - Globals.Slime.Width) || (slimePos.Y >= Globals.WindowHeight - Globals.Myship.Height) || (slimePos.X <= 0) ||  (slimePos.Y <= 0))
+            {
+                slimeSpeed.X = 2f;
+                slimeSpeed.Y = 2f;
+            }
+            else if ((slimePos.X >= Globals.WindowWidth - Globals.Slime.Width) || slimePos.Y >= Globals.WindowHeight - Globals.Slime.Height || slimePos.X <= 0 || slimePos.Y <= 0)
+            {
+                slimeSpeed.X = 0f;
+                slimeSpeed.Y = 0f;
+            }
+
+            for (int i = 0; i < Globals.BulletPosList.Count; i++)
 {
                 Vector2 temp_bullet;
                 temp_bullet.X = Globals.BulletPosList.ElementAt(i).X;
@@ -153,42 +166,48 @@ namespace EttEgetSpel
 
         protected override void Draw(GameTime gameTime)
         {
-            
 
+            KeyboardState keyboardState = Keyboard.GetState();
             // TODO: Add your drawing code here
+
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            
-            if(Globals.Health > 0)
+            if (keyboardState.IsKeyDown(Keys.Space))
             {
-                GraphicsDevice.Clear(Color.CornflowerBlue);
-                spriteBatch.Draw(Globals.Myship, Globals.Myship_pos, Color.White);
-                foreach (Vector2 coinPos in coinPosList)
+                if (Globals.Health > 0)
                 {
-                    spriteBatch.Draw(Globals.Coin, new Rectangle(coinPos.ToPoint(), new Point(30, 30)), Color.White);
-                }
-                foreach (Vector2 slimePos in slimePosList)
-                {
-                    spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    spriteBatch.Draw(Globals.Myship, Globals.Myship_pos, Color.White);
+                    foreach (Vector2 coinPos in coinPosList)
+                    {
+                        spriteBatch.Draw(Globals.Coin, new Rectangle(coinPos.ToPoint(), new Point(30, 30)), Color.White);
+                    }
+                    foreach (Vector2 slimePos in slimePosList)
+                    {
+                        spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
+
+
+                    }
+                    for (int i = 0; i < slimePosList.Count; i++)
+                    {
+                        slimePosList[i] = slimePosList[i] + slimeSpeed;
+                    }
+                    foreach (Vector2 bullets in Globals.BulletPosList)
+                    {
+                        spriteBatch.Draw(Globals.Bullet, bullets, Color.White);
+                    }
+                    spriteBatch.DrawString(gameFont, "Points: " + points, new Vector2(10, 10), Color.White);
+                    spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
+                    spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
 
 
                 }
-                for (int i = 0; i < slimePosList.Count; i++)
+                else
                 {
-                    slimePosList[i] = slimePosList[i] + slimeSpeed;
+                    GraphicsDevice.Clear(Color.Black);
+                    spriteBatch.DrawString(gameFont, "Game Over ", new Vector2(350, 245), Color.White);
+                    spriteBatch.Draw(Globals.GameOver, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
                 }
-                foreach (Vector2 bullets in Globals.BulletPosList)
-                {
-                    spriteBatch.Draw(Globals.Bullet, bullets, Color.White);
-                }
-                spriteBatch.DrawString(gameFont, "Points: " + points, new Vector2(10, 10), Color.White);
-                spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
-                spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
                 
-                
-            }
-            else
-            {
-                GraphicsDevice.Clear(Color.Black);
             }
             spriteBatch.End();
             base.Draw(gameTime);

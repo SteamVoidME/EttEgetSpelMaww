@@ -10,7 +10,7 @@ public static class Globals
 {
     static Vector2 myship_pos = new Vector2(0, 0), myshipSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed;
     static int windowWidth, windowHeight, health = 100;
-    static Texture2D myship, coin, slime, bullet;
+    static Texture2D myship, coin, slime, bullet, gameOver;
     static Rectangle recMyShip, recCoin, recSlime;
     static List<Vector2> bulletPosList = new List<Vector2>();
 
@@ -19,6 +19,11 @@ public static class Globals
     {
         get { return myship; }
         set { myship = value; }
+    }
+    public static Texture2D GameOver
+    {
+        get { return gameOver; }
+        set { gameOver = value; }
     }
     public static Rectangle RecSlime
     {
