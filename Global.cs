@@ -9,8 +9,8 @@ using System.Security.Principal;
 public static class Globals
 {
     static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed;
-    static int windowWidth, windowHeight, health = 100, stHP, bossHP;
-    static Texture2D illuminati, coin, slime, bullet, startSpace, backgroundMap;
+    static int windowWidth, windowHeight, health = 100, stHP, bossHP, bossHits = 0;
+    static Texture2D illuminati, coin, slime, bullet, startSpace, backgroundMap, bossSlime;
     static Rectangle recIlluminati, recCoin, recSlime, recBullet, recBossSlime, recHP;
     static List<Vector2> bulletPosList = new List<Vector2>();
     static bool start = false;
@@ -23,10 +23,20 @@ public static class Globals
         get { return illuminati; }
         set { illuminati = value; }
     }
+    public static Texture2D BossSlime
+    {
+        get { return bossSlime; }
+        set { bossSlime = value; }
+    }
     public static int StHP
     {
         get { return stHP; }
         set { stHP = value; }
+    }
+    public static int BossHits
+    {
+        get { return BossHits; }
+        set { bossHits = value; }
     }
     public static int BossHP
     {

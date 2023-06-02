@@ -16,12 +16,12 @@ namespace EttEgetSpel
         int points = 0;
         int kills = 0;
         int BossKills = 0;
-        Texture2D healthBarTex, GameOver, BossSlime, HP;
+        Texture2D healthBarTex, GameOver, HP;
         Vector2 coin_pos, slimePos, slimeSpeed, bossSlimePos, bossSlimeSpeed, tempSpeed, tempBossSpeed;
         double timeSinceLastDamage;
 
 
-        List<Vector2> coinPosList = new List<Vector2>();
+        List<Vector2> coinPosList = new List<Vector2>();                //                     LIST & VAriabler
         List<Vector2> slimePosList = new List<Vector2>();
         List<Vector2> hPPosList = new List<Vector2>();
         List<Vector2> bossSlimePosList = new List<Vector2>();
@@ -52,7 +52,7 @@ namespace EttEgetSpel
                 coin_pos.X = slump.Next(0, Window.ClientBounds.Width - 50);
                 coin_pos.Y = slump.Next(0, Window.ClientBounds.Height - 50);
                 coinPosList.Add(coin_pos);
-                hPPosList.Add(Globals.HPPos);    
+                    
             }
             for (int i = 0; i < 1; i++)
             {
@@ -100,7 +100,7 @@ namespace EttEgetSpel
             Globals.StartSpace = Content.Load<Texture2D>("Sprites/StartSpace");
             Globals.BackgroundMap = Content.Load<Texture2D>("Sprites/BackgoundMap");
             GameOver = Content.Load<Texture2D>("Sprites/GameOver");
-            BossSlime = Content.Load<Texture2D>("Sprites/BossSlime");
+            Globals.BossSlime = Content.Load<Texture2D>("Sprites/BossSlime");
             HP = Content.Load<Texture2D>("Sprites/HP");
             healthBarTex = new Texture2D(GraphicsDevice, 1, 1);
             healthBarTex.SetData(new Color[] { Color.Red });
@@ -117,8 +117,7 @@ namespace EttEgetSpel
             move.Movement();
 
             //Hit
-            Globals.RecIlluminati = new Rectangle((int)Globals.IlluminatiPos.X, (int)Globals.IlluminatiPos.Y, Globals.Illuminati.Width, Globals.Illuminati.Height);
-            Globals.RecCoin = new Rectangle((int)Globals.Coin_pos.X, (int)Globals.Coin_pos.Y, Globals.Coin.Width, Globals.Coin.Height);
+            
 
 
             foreach (Vector2 coin in coinPosList.ToList())
@@ -178,7 +177,7 @@ namespace EttEgetSpel
                     }
                 }
 
-                    if (Globals.RecIlluminati.Intersects(Globals.RecSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
+                if (Globals.RecIlluminati.Intersects(Globals.RecSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
                 {
                     Globals.Health -= 8;
                     timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds; 
@@ -193,28 +192,29 @@ namespace EttEgetSpel
             }
 
 
-            
+            Globals.BossHP = 100;
             foreach (Vector2 bossSlime in bossSlimePosList.ToList())
             {
-                Globals.RecBossSlime = new Rectangle((int)bossSlime.X, (int)bossSlime.Y, BossSlime.Width, BossSlime.Height);
-
-                   
-                if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
+                Globals.RecBossSlime = new Rectangle((int)bossSlime.X, (int)bossSlime.Y, Globals.BossSlime.Width, Globals.BossSlime.Height);
+                
+                for (int i = 0; i < Globals.BulletPosList.Count; i++)
                 {
-                    Globals.BossHP -= 5;
-                    BossKills += 1;
-                    if (Globals.BossHP <= 0)
+                    if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
                     {
-                        bossSlimePosList.Remove(bossSlime);
-                        hPPosList.Add(bossSlime);
-                        BossKills += 1;
+                        Globals.BossHP -= 5;
+                        Globals.BossHits += 1;
+                        if (Globals.BossHP <= 0)
+                        {
+                            bossSlimePosList.Remove(bossSlime);
+                            hPPosList.Add(bossSlime);
+                            BossKills += 1;
+                        }
                     }
                 }
-                    
 
-                if (Globals.RecIlluminati.Intersects(Globals.RecBossSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
+                if (Globals.RecIlluminati.Intersects(Globals.RecBossSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 500)))
                 {
-                    Globals.Health -= 18;
+                    Globals.Health -= 5;
                     timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
                 }
 
@@ -244,14 +244,14 @@ namespace EttEgetSpel
 
             for (int i = 0; i < bossSlimePosList.Count; i++)
             {
-                if ((bossSlimePosList[i].Y >= (Globals.WindowHeight - BossSlime.Height * 3) || bossSlimePosList[i].Y <= 0))
+                if ((bossSlimePosList[i].Y >= (Globals.WindowHeight - Globals.BossSlime.Height * 3) || bossSlimePosList[i].Y <= 0))
                 {
                     tempBossSpeed.X = Globals.BossSlimeSpeedList[i].X;
                     tempBossSpeed.Y = -Globals.BossSlimeSpeedList[i].Y;
                     Globals.BossSlimeSpeedList[i] = tempBossSpeed;
 
                 }
-                if ((bossSlimePosList[i].X >= (Globals.WindowWidth - BossSlime.Width * 3) || bossSlimePosList[i].X <= 0))
+                if ((bossSlimePosList[i].X >= (Globals.WindowWidth - Globals.BossSlime.Width * 3) || bossSlimePosList[i].X <= 0))
                 {
                     tempBossSpeed.X = -Globals.BossSlimeSpeedList[i].X;
                     tempBossSpeed.Y = Globals.BossSlimeSpeedList[i].Y;
@@ -294,7 +294,7 @@ namespace EttEgetSpel
             {
                 GraphicsDevice.Clear(Color.DarkGray); //                 Placement X                    Placement Y        Width   Height   
 
-                spriteBatch.Draw(Globals.StartSpace, new Rectangle(Globals.WindowWidth / 2 - 280, Globals.WindowHeight - 340, 600, 200), Color.Red);
+                spriteBatch.Draw(Globals.StartSpace, new Rectangle(Globals.WindowWidth / 2 - 280, Globals.WindowHeight - 340, 600, 200), Color.White);
 
             }
             
@@ -319,7 +319,7 @@ namespace EttEgetSpel
                 }
                 foreach (Vector2 bossSlimePos in bossSlimePosList)
                 {
-                    spriteBatch.Draw(BossSlime, new Rectangle(bossSlimePos.ToPoint(), new Point(150, 150)), Color.White);
+                    spriteBatch.Draw(Globals.BossSlime, new Rectangle(bossSlimePos.ToPoint(), new Point(150, 150)), Color.White);
                 }
 
                 foreach (Vector2 potion in hPPosList)
@@ -334,6 +334,7 @@ namespace EttEgetSpel
                 spriteBatch.DrawString(gameFont, "BitCoins: " + points, new Vector2(10, 10), Color.White);
                 spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
                 spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
+                spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.Red);
                 spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 50), Color.White);
                 spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 70), Color.White);
 
