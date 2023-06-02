@@ -34,16 +34,16 @@ public class Move
 
         // TODO: Add your update logic here
         Random slump = new Random();
-        if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Globals.WindowWidth - Globals.Myship.Width) || keyboardState.IsKeyDown(Keys.W) && (myship_pos.Y >= Globals.WindowHeight - Globals.Myship.Height) || keyboardState.IsKeyDown(Keys.D) && (myship_pos.X <= 0) || keyboardState.IsKeyDown(Keys.S) && (myship_pos.Y <= 0))
+        if (keyboardState.IsKeyDown(Keys.A) && (myship_pos.X >= Globals.WindowWidth - Globals.Illuminati.Width) || keyboardState.IsKeyDown(Keys.W) && (myship_pos.Y >= Globals.WindowHeight - Globals.Illuminati.Height) || keyboardState.IsKeyDown(Keys.D) && (myship_pos.X <= 0) || keyboardState.IsKeyDown(Keys.S) && (myship_pos.Y <= 0))
         {
             myship_speed.X = 3.5f;
             myship_speed.Y = 3.5f;
         }
-        else if ((myship_pos.X >= Globals.WindowWidth - Globals.Myship.Width) || myship_pos.Y >= Globals.WindowHeight - Globals.Myship.Height || myship_pos.X <= 0 || myship_pos.Y <= 0)
+        else if ((myship_pos.X >= Globals.WindowWidth - Globals.Illuminati.Width) || myship_pos.Y >= Globals.WindowHeight - Globals.Illuminati.Height || myship_pos.X <= 0 || myship_pos.Y <= 0)
         {
             myship_speed.X = 0;
             myship_speed.Y = 0;
         }
-        Globals.Myship_pos = myship_pos;
+        Globals.IlluminatiPos = myship_pos;
     }
 }
