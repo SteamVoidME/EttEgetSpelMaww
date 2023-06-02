@@ -40,8 +40,8 @@ public class Bullet
         }
         if (Keyboard.GetState().IsKeyDown(Keys.Right) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastBullet + 170)))
         {
-            bulletPosRight.X = Globals.IlluminatiPos.X / 2 + Globals.Illuminati.Width;
-            bulletPosRight.Y = Globals.IlluminatiPos.Y;
+            bulletPosRight.X = Globals.IlluminatiPos.X ;
+            bulletPosRight.Y = Globals.IlluminatiPos.Y + Globals.Illuminati.Height / 2;
             Globals.BulletPosRightList.Add(bulletPosRight);
             
             timeSinceLastBullet = gameTime.TotalGameTime.TotalMilliseconds;
