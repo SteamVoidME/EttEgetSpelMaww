@@ -8,7 +8,7 @@ using System.Security.Principal;
 
 public static class Globals
 {
-    static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), bossSlimePos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed, bulletSpeedRight;
+    static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed, bulletSpeedRight;
     static int windowWidth, windowHeight, health = 100, stHP, bossHP = 200, bossHits = 0;
     static Texture2D illuminati, coin, slime, bullet, bulletRight, startSpace, backgroundMap, bossSlime;
     static Rectangle recIlluminati, recCoin, recSlime, recBullet, recBossSlime, recHP;
@@ -156,6 +156,7 @@ public static class Globals
         get { return bulletPos; }
         set { bulletPos = value; }
     }
+    
     public static List<Vector2> BulletPosList
     {
         get { return bulletPosList; }

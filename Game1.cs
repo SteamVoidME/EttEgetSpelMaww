@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace EttEgetSpel
 {
@@ -17,9 +18,10 @@ namespace EttEgetSpel
         int points = 0;
         int kills = 0;
         int BossKills = 0;
-        Texture2D healthBarTex, GameOver, HP;
-        Vector2 coin_pos, slimePos, slimeSpeed, bossSlimePos, bossSlimeSpeed, tempSpeed, tempBossSpeed;
-        double timeSinceLastDamage;
+        float scale = 0.2f; // Change this value to resize the sprite
+        Texture2D healthBarTex, GameOver, HP, slimekingtest;
+        Vector2 coin_pos, slimePos, slimeSpeed, bossSlimePos = new Vector2 (0, 0), bossSlimeSpeed, tempSpeed, tempBossSpeed;
+        double timeSinceLastDamage, timeSinceLastDamageToBoss ;
 
 
         List<Vector2> coinPosList = new List<Vector2>();                //                     LIST & VAriabler
@@ -59,8 +61,9 @@ namespace EttEgetSpel
             {
                 
                 Random rng = new Random();
-                bossSlimePos.X = rng.Next(0, Window.ClientBounds.Width - 150);
-                bossSlimePos.Y = rng.Next(0, Window.ClientBounds.Height - 150);
+                bossSlimePos.X = rng.Next(0, 50);
+                bossSlimePos.Y = rng.Next(0, 50);
+                
                 bossSlimePosList.Add(bossSlimePos);
 
                 bossSlimeSpeed.X = rng.Next(-2, 2);
@@ -106,6 +109,8 @@ namespace EttEgetSpel
             HP = Content.Load<Texture2D>("Sprites/HP");
             healthBarTex = new Texture2D(GraphicsDevice, 1, 1);
             healthBarTex.SetData(new Color[] { Color.Red });
+            slimekingtest = new Texture2D(GraphicsDevice, 1, 1);
+            slimekingtest.SetData(new Color[] { Color.BlueViolet });
         }
                                                                                                          //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         protected override void Update(GameTime gameTime)
@@ -210,10 +215,11 @@ namespace EttEgetSpel
                 
                 for (int i = 0; i < Globals.BulletPosList.Count; i++)
                 {
-                    if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
+                    if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamageToBoss + 300)))
                     {
                         Globals.BossHP -= 5;
                         Globals.BossHits += 1;
+                        timeSinceLastDamageToBoss = gameTime.TotalGameTime.TotalMilliseconds;
                         if (Globals.BossHP <= 0)
                         {
                             bossSlimePosList.Remove(bossSlime);
@@ -229,7 +235,7 @@ namespace EttEgetSpel
                     {
                         Globals.BossHP -= 5;
                         Globals.BossHits += 1;
-                        timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
+                        timeSinceLastDamageToBoss = gameTime.TotalGameTime.TotalMilliseconds;
                         
                         if (Globals.BossHP <= 0)
                         {
@@ -363,7 +369,8 @@ namespace EttEgetSpel
                 }
                 foreach (Vector2 bossSlimePos in bossSlimePosList)
                 {
-                    spriteBatch.Draw(Globals.BossSlime, bossSlimePos, Color.White);
+                    //spriteBatch.Draw(Globals.BossSlime, bossSlimePos, Color.White);
+                    spriteBatch.Draw(Globals.BossSlime, bossSlimePos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 }
 
                 foreach (Vector2 potion in hPPosList)
@@ -383,7 +390,7 @@ namespace EttEgetSpel
                 spriteBatch.DrawString(gameFont, "Bullets Up: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
                 spriteBatch.DrawString(gameFont, "Bullets Right: " + Globals.BulletPosRightList.Count(), new Vector2(10, 90), Color.White);
                 spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
-                spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.DeepPink);
+                spriteBatch.Draw(slimekingtest, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.BlueViolet);
                 spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 50), Color.White);
                 spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 70), Color.White);
                 spriteBatch.DrawString(gameFont, "BossHits: " + Globals.BossHits, new Vector2(10, 110), Color.White);
