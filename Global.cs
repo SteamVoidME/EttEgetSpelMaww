@@ -8,11 +8,12 @@ using System.Security.Principal;
 
 public static class Globals
 {
-    static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed;
+    static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed, bulletSpeedRight;
     static int windowWidth, windowHeight, health = 100, stHP, bossHP, bossHits = 0;
-    static Texture2D illuminati, coin, slime, bullet, startSpace, backgroundMap, bossSlime;
+    static Texture2D illuminati, coin, slime, bullet, bulletRight, startSpace, backgroundMap, bossSlime;
     static Rectangle recIlluminati, recCoin, recSlime, recBullet, recBossSlime, recHP;
     static List<Vector2> bulletPosList = new List<Vector2>();
+    static List<Vector2> bulletPosRightList = new List<Vector2>();
     static bool start = false;
     static List<Vector2> slimeSpeedList = new List<Vector2>();
     static List<Vector2> bossSlimeSpeedList = new List<Vector2>();
@@ -23,6 +24,7 @@ public static class Globals
         get { return illuminati; }
         set { illuminati = value; }
     }
+    
     public static Texture2D BossSlime
     {
         get { return bossSlime; }
@@ -35,7 +37,7 @@ public static class Globals
     }
     public static int BossHits
     {
-        get { return BossHits; }
+        get { return bossHits; }
         set { bossHits = value; }
     }
     public static int BossHP
@@ -82,6 +84,11 @@ public static class Globals
     {
         get { return bullet; }
         set { bullet = value; }
+    }
+    public static Texture2D BulletRight
+    {
+        get { return bulletRight; }
+        set { bulletRight = value; }
     }
     public static int WindowWidth
     {
@@ -154,6 +161,11 @@ public static class Globals
         get { return bulletPosList; }
         set { bulletPosList = value; }
     }
+    public static List<Vector2> BulletPosRightList
+    {
+        get { return bulletPosRightList; }
+        set { bulletPosRightList = value; }
+    }
     public static List<Vector2> SlimeSpeedList
     {
         get { return slimeSpeedList; }
@@ -168,5 +180,10 @@ public static class Globals
     {
         get { return bulletSpeed; }
         set { bulletSpeed = value; }
+    }
+    public static Vector2 BulletSpeedRight
+    {
+        get { return bulletSpeedRight; }
+        set { bulletSpeedRight = value; }
     }
 }
