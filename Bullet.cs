@@ -8,22 +8,28 @@ using System.Security.Principal;
 
 public class Bullet
 {
-	Vector2 i, bulletPos, bulletSpeed;
+	Vector2 i, bulletPos, bulletPosRight, bulletSpeed, bulletSpeedRight;
 	KeyboardState keyboardState = Keyboard.GetState();
 	double timeSinceLastBullet;
     MouseState mouseState = Mouse.GetState();
 
     public Bullet()
 	{
+
 		bulletSpeed.Y = 6f;
 		bulletSpeed.X = 0;
-		Globals.BulletSpeed = bulletSpeed;
+        Globals.BulletSpeed = bulletSpeed; 
+
+        bulletSpeedRight.Y = 0;
+        bulletSpeedRight.X = -6;
+        Globals.BulletSpeedRight= bulletSpeedRight;
 	}
 	public void SpawnBullet(GameTime gameTime)
 	{
         MouseState mouseState = Mouse.GetState();
         KeyboardState keyboardState = Keyboard.GetState();
-		
+        
+        
         if (Keyboard.GetState().IsKeyDown(Keys.Up) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastBullet + 170)))
 		{
 			bulletPos.X = Globals.IlluminatiPos.X + Globals.Illuminati.Width / 2;
@@ -34,13 +40,10 @@ public class Bullet
         }
         if (Keyboard.GetState().IsKeyDown(Keys.Right) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastBullet + 170)))
         {
-            bulletPos.X = Globals.IlluminatiPos.X + Globals.Illuminati.Width / 2;
-            bulletPos.Y = Globals.IlluminatiPos.Y;
-            Globals.BulletPosList.Add(bulletPos);
-            bulletSpeed.Y = 0;
-            bulletSpeed.X = 6f;
-
-
+            bulletPosRight.X = Globals.IlluminatiPos.X / 2 + Globals.Illuminati.Width;
+            bulletPosRight.Y = Globals.IlluminatiPos.Y;
+            Globals.BulletPosRightList.Add(bulletPosRight);
+            
             timeSinceLastBullet = gameTime.TotalGameTime.TotalMilliseconds;
         }
 

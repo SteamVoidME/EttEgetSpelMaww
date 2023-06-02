@@ -97,6 +97,7 @@ namespace EttEgetSpel
             Globals.Coin = Content.Load<Texture2D>("Sprites/Bit Coin sprite");
             Globals.Slime = Content.Load<Texture2D>("Sprites/Slime1");
             Globals.Bullet = Content.Load<Texture2D>("Sprites/BulletGreen");
+            Globals.BulletRight = Content.Load<Texture2D>("Sprites/BulletGreenRight");
             Globals.StartSpace = Content.Load<Texture2D>("Sprites/StartSpace");
             Globals.BackgroundMap = Content.Load<Texture2D>("Sprites/BackgoundMap");
             GameOver = Content.Load<Texture2D>("Sprites/GameOver");
@@ -173,6 +174,18 @@ namespace EttEgetSpel
                         
                     }
                 }
+                for (int i = 0; i < Globals.BulletPosRightList.Count; i++)
+                {
+                    Globals.RecBullet = new Rectangle((int)Globals.BulletPosRightList[i].X, (int)Globals.BulletPosRightList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
+
+                    if (Globals.RecSlime.Intersects(Globals.RecBullet))
+                    {
+                        slimePosList.Remove(slime);
+                        hPPosList.Add(slime);
+                        kills += 1;
+
+                    }
+                }
 
                 if (Globals.RecIlluminati.Intersects(Globals.RecSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
                 {
@@ -193,7 +206,7 @@ namespace EttEgetSpel
             foreach (Vector2 bossSlime in bossSlimePosList.ToList())
             {
                 Globals.RecBossSlime = new Rectangle((int)bossSlime.X, (int)bossSlime.Y, Globals.BossSlime.Width, Globals.BossSlime.Height);
-
+                
                 for (int i = 0; i < Globals.BulletPosList.Count; i++)
                 {
                     if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
@@ -260,7 +273,7 @@ namespace EttEgetSpel
 
 
             for (int i = 0; i < Globals.BulletPosList.Count; i++)
-{
+            {
                 Vector2 temp_bullet;
                 temp_bullet.X = Globals.BulletPosList.ElementAt(i).X;
                 temp_bullet.Y = Globals.BulletPosList.ElementAt(i).Y;
@@ -273,6 +286,22 @@ namespace EttEgetSpel
                 {
                     Globals.BulletPosList.RemoveAt(i);
                     Globals.BulletPosList.Insert(i, temp_bullet);
+                }
+            }
+            for (int i = 0; i < Globals.BulletPosRightList.Count; i++)
+            {
+                Vector2 temp_bulletRight;
+                temp_bulletRight.X = Globals.BulletPosRightList.ElementAt(i).X;
+                temp_bulletRight.Y = Globals.BulletPosRightList.ElementAt(i).Y;
+                temp_bulletRight.X = temp_bulletRight.X - Globals.BulletSpeedRight.X;
+                if (temp_bulletRight.X < 0)
+                {
+                    Globals.BulletPosRightList.RemoveAt(i);
+                }
+                else
+                {
+                    Globals.BulletPosRightList.RemoveAt(i);
+                    Globals.BulletPosRightList.Insert(i, temp_bulletRight);
                 }
             }
             base.Update(gameTime);
@@ -328,10 +357,15 @@ namespace EttEgetSpel
                 {
                     spriteBatch.Draw(Globals.Bullet, bullets, Color.White);
                 }
+                foreach (Vector2 bulletsRight in Globals.BulletPosRightList)
+                {
+                    spriteBatch.Draw(Globals.BulletRight, bulletsRight, Color.White);
+                }
                 spriteBatch.DrawString(gameFont, "BitCoins: " + points, new Vector2(10, 10), Color.White);
                 spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
+                spriteBatch.DrawString(gameFont, "Bullets: " + Globals.BulletPosRightList.Count(), new Vector2(10, 90), Color.White);
                 spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
-                spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.Red);
+                spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.DeepPink);
                 spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 50), Color.White);
                 spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 70), Color.White);
                 spriteBatch.DrawString(gameFont, "BossHits: " + Globals.BossHits, new Vector2(10, 90), Color.White);
