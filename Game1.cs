@@ -14,8 +14,9 @@ namespace EttEgetSpel
         
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
+        float scale = 2f;
         bool bossSpawn = false, spawnSlimes = false;
-        int points = 0, slimeAmount = 8;
+        int points = 0, slimeAmount = 8, level = 1;
         int kills = 0;
         int BossKills = 0;
         Texture2D healthBarTex, GameOver, HP;
@@ -89,7 +90,7 @@ namespace EttEgetSpel
         
         public void BossSpawn(int j)
         {
-            Globals.BossHP = 400;
+            Globals.BossHP = 180;
             for (int i = 0; i < j; i++)
             {
 
@@ -138,7 +139,9 @@ namespace EttEgetSpel
             if(spawnSlimes == true)
             {
                 spawnSlimes = false;
-                SlimeSpawner(slimeAmount);
+                SlimeSpawner(slimeAmount++);
+                
+                
 
             }
             foreach (Vector2 coin in coinPosList.ToList())
@@ -240,14 +243,16 @@ namespace EttEgetSpel
                     for (int i = 0; i < Globals.BulletPosList.Count; i++)
                     {
                         Globals.RecBullet = new Rectangle((int)Globals.BulletPosList[i].X, (int)Globals.BulletPosList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
-                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
+                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 200)))
                         {
-                            Globals.BossHP -= 5;
+                            Globals.BossHP -= 3;
                             Globals.BossHits += 1;
+                            timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
                             if (Globals.BossHP <= 0)
                             {
                                 spawnSlimes = true;
                                 bossSpawn = true;
+                                level++; 
                                 
                                 bossSlimePosList.Remove(bossSlime);
                                 hPPosList.Add(bossSlime);
@@ -258,14 +263,18 @@ namespace EttEgetSpel
                     for (int i = 0; i < Globals.BulletPosRightList.Count; i++)
                     {
                         Globals.RecBullet = new Rectangle((int)Globals.BulletPosRightList[i].X, (int)Globals.BulletPosRightList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
-                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
+                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 200)))
                         {
-                            Globals.BossHP -= 5;
+                            Globals.BossHP -= 3;
                             Globals.BossHits += 1;
                             timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
 
                             if (Globals.BossHP <= 0)
                             {
+                                spawnSlimes = true;
+                                bossSpawn = true;
+                                level++;
+
                                 bossSlimePosList.Remove(bossSlime);
                                 hPPosList.Add(bossSlime);
                                 BossKills += 1;
@@ -375,6 +384,11 @@ namespace EttEgetSpel
 
                 spriteBatch.Draw(Globals.StartSpace, new Rectangle(Globals.WindowWidth / 2 - 280, Globals.WindowHeight - 340, 600, 200), Color.White);
 
+                spriteBatch.DrawString(gameFont, "Use WASD for Movement", new Vector2(30, 35), Color.Cyan);
+
+                spriteBatch.DrawString(gameFont, "Use UP and Right arrows to Shoot !!!", new Vector2(30, 60), Color.Cyan);
+                spriteBatch.DrawString(gameFont, "Every Level = 1 extra Slime", new Vector2(30, 10), Color.Cyan);
+
             }
             
             if (keyboardState.IsKeyDown(Keys.Space) && Globals.Start == false)
@@ -433,20 +447,22 @@ namespace EttEgetSpel
 
                 }
                 spriteBatch.DrawString(gameFont, "BitCoins: " + points, new Vector2(10, 10), Color.White);
-                spriteBatch.DrawString(gameFont, "Bullets Up: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
-                spriteBatch.DrawString(gameFont, "Bullets Right: " + Globals.BulletPosRightList.Count(), new Vector2(10, 90), Color.White);
+                spriteBatch.DrawString(gameFont, "Bullets Up: " + Globals.BulletPosList.Count(), new Vector2(10, 35), Color.White);
+                spriteBatch.DrawString(gameFont, "Bullets Right: " + Globals.BulletPosRightList.Count(), new Vector2(10, 110), Color.White);
                 spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
                 if(slimePosList.Count == 0) {
-                    spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.DeepPink);
+                    spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, + Globals.BossHP * 2), Color.DeepPink);
                 }
                 
-                spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 50), Color.White);
-                spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 70), Color.White);
-                spriteBatch.DrawString(gameFont, "BossHits: " + Globals.BossHits, new Vector2(10, 110), Color.White);
-                spriteBatch.DrawString(gameFont, "Health: " + Globals.Health, new Vector2(10, 130), Color.White);
-                spriteBatch.DrawString(gameFont, "Enemys left: " + slimePosList.Count, new Vector2(10, 150), Color.White);
-                spriteBatch.DrawString(gameFont, "SlimeSpawn: " + spawnSlimes, new Vector2(10, 170), Color.White);
-                spriteBatch.DrawString(gameFont, "BossSpawn: " + bossSpawn, new Vector2(10, 190), Color.White);
+                spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 60), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 85), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "BossHits: " + Globals.BossHits, new Vector2(10, 135), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "Health: " + Globals.Health, new Vector2(Globals.WindowWidth - 100, 35), Color.Red);
+                spriteBatch.DrawString(gameFont, "Enemys left: " + slimePosList.Count, new Vector2(10, 160), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "SlimeSpawn: " + spawnSlimes, new Vector2(10, 185), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "BossSpawn: " + bossSpawn, new Vector2(10, 210), Color.DarkBlue);
+                spriteBatch.DrawString(gameFont, "Boss Health: " + Globals.BossHP, new Vector2(Globals.WindowWidth - 100, 60), Color.DeepPink);
+                spriteBatch.DrawString(gameFont, "Level: " + level, new Vector2( Globals.WindowWidth - 70, 10), Color.Black);
 
 
 
@@ -463,6 +479,7 @@ namespace EttEgetSpel
                 GraphicsDevice.Clear(Color.DarkGray);
                 Vector2 gameOverPos = new Vector2();
                 spriteBatch.Draw(GameOver, new Rectangle(Globals.WindowWidth / 2 - 40, Globals.WindowHeight - 300, 100, 100), Color.Red);
+                spriteBatch.DrawString(gameFont, "Press Enter to Play again", new Vector2(325, 60), Color.White);
             }
             spriteBatch.End();
             base.Draw(gameTime);
