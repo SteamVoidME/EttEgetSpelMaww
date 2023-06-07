@@ -14,7 +14,8 @@ namespace EttEgetSpel
         
         private GraphicsDeviceManager _graphics;
         private SpriteBatch spriteBatch;
-        int points = 0;
+        bool bossSpawn = false, spawnSlimes = false;
+        int points = 0, slimeAmount = 8;
         int kills = 0;
         int BossKills = 0;
         Texture2D healthBarTex, GameOver, HP;
@@ -55,34 +56,10 @@ namespace EttEgetSpel
                 coinPosList.Add(coin_pos);
                     
             }
-            for (int i = 0; i < 1; i++)
-            {
-                
-                Random rng = new Random();
-                bossSlimePos.X = rng.Next(0, Window.ClientBounds.Width - 150);
-                bossSlimePos.Y = rng.Next(0, Window.ClientBounds.Height - 150);
-                bossSlimePosList.Add(bossSlimePos);
 
-                bossSlimeSpeed.X = rng.Next(-2, 2);
-                bossSlimeSpeed.Y = rng.Next(-2, 2);
-                Globals.BossSlimeSpeedList.Add(bossSlimeSpeed);
 
-            }
-            
+           
 
-            for (int i = 0; i < 8; i++)
-            {
-
-                Random rnd = new Random();
-                slimePos.X = rnd.Next(0, Window.ClientBounds.Width - 50);
-                slimePos.Y = rnd.Next(0, Window.ClientBounds.Height - 50);
-                slimePosList.Add(slimePos);
-
-                slimeSpeed.X = rnd.Next(-2, 2);
-                slimeSpeed.Y = rnd.Next(-1, 1);
-                Globals.SlimeSpeedList.Add(slimeSpeed);
-
-            }
 
 
             base.Initialize();
@@ -102,12 +79,49 @@ namespace EttEgetSpel
             Globals.StartSpace = Content.Load<Texture2D>("Sprites/StartSpace");
             Globals.BackgroundMap = Content.Load<Texture2D>("Sprites/BackgoundMap");
             GameOver = Content.Load<Texture2D>("Sprites/GameOver");
-            Globals.BossSlime = Content.Load<Texture2D>("Sprites/BossSlime");
+            Globals.BossSlime = Content.Load<Texture2D>("Sprites/BossSlime2");
             HP = Content.Load<Texture2D>("Sprites/HP");
             healthBarTex = new Texture2D(GraphicsDevice, 1, 1);
             healthBarTex.SetData(new Color[] { Color.Red });
+            
         }
-                                                                                                         //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                   
+        
+        public void BossSpawn(int j)
+        {
+            Globals.BossHP = 400;
+            for (int i = 0; i < j; i++)
+            {
+
+                Random rng = new Random();
+                bossSlimePos.X = rng.Next(0, Window.ClientBounds.Width - 300);
+                bossSlimePos.Y = rng.Next(0, Window.ClientBounds.Height - 350);
+                bossSlimePosList.Add(bossSlimePos);
+
+                bossSlimeSpeed.X =  2;
+                bossSlimeSpeed.Y =  2;
+                Globals.BossSlimeSpeedList.Add(bossSlimeSpeed);
+
+            }
+        }
+        public void SlimeSpawner(int j)
+        {
+            for (int i = 0; i < j; i++)
+            {
+
+                Random rnd = new Random();
+                slimePos.X = rnd.Next(0, Window.ClientBounds.Width - 50);
+                slimePos.Y = rnd.Next(0, Window.ClientBounds.Height - 50);
+                slimePosList.Add(slimePos);
+
+                slimeSpeed.X = rnd.Next(-2, 2);
+                slimeSpeed.Y = rnd.Next(-1, 1);
+                Globals.SlimeSpeedList.Add(slimeSpeed);
+
+            }
+        }
+
+        //Update <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         protected override void Update(GameTime gameTime)
         {
             Globals.RecIlluminati = new Rectangle((int)Globals.IlluminatiPos.X, (int)Globals.IlluminatiPos.Y, Globals.Illuminati.Width, Globals.Illuminati.Height);
@@ -121,7 +135,12 @@ namespace EttEgetSpel
             //Hit
             
 
+            if(spawnSlimes == true)
+            {
+                spawnSlimes = false;
+                SlimeSpawner(slimeAmount);
 
+            }
             foreach (Vector2 coin in coinPosList.ToList())
             {
                 
@@ -143,14 +162,13 @@ namespace EttEgetSpel
                 if (Globals.RecIlluminati.Intersects(Globals.RecHP))
                 {
                     hPPosList.Remove(hP);
-                    
-                    if (!(Globals.Health == 100))
-                    {
-                        Globals.Health += 10;
-                    }
-                    
+                    Globals.Health += 10;
                 }
 
+            }
+            if(Globals.Health >= 100)
+            {
+                Globals.Health = 100;
             }
 
 
@@ -204,49 +222,65 @@ namespace EttEgetSpel
 
 
             
-            foreach (Vector2 bossSlime in bossSlimePosList.ToList())
+
+            if (slimePosList.Count == 0 && Globals.Health > 0)
             {
-                Globals.RecBossSlime = new Rectangle((int)bossSlime.X, (int)bossSlime.Y, Globals.BossSlime.Width, Globals.BossSlime.Height);
+                if(bossSpawn == true)
+                {
+                    BossSpawn(1);
+                    bossSpawn = false;
+                }
+                    
                 
-                for (int i = 0; i < Globals.BulletPosList.Count; i++)
+
+                foreach (Vector2 bossSlime in bossSlimePosList.ToList())
                 {
-                    if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
+                    Globals.RecBossSlime = new Rectangle((int)bossSlime.X, (int)bossSlime.Y, Globals.BossSlime.Width, Globals.BossSlime.Height);
+
+                    for (int i = 0; i < Globals.BulletPosList.Count; i++)
                     {
-                        Globals.BossHP -= 5;
-                        Globals.BossHits += 1;
-                        if (Globals.BossHP <= 0)
+                        Globals.RecBullet = new Rectangle((int)Globals.BulletPosList[i].X, (int)Globals.BulletPosList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
+                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet))
                         {
-                            bossSlimePosList.Remove(bossSlime);
-                            hPPosList.Add(bossSlime);
-                            BossKills += 1;
+                            Globals.BossHP -= 5;
+                            Globals.BossHits += 1;
+                            if (Globals.BossHP <= 0)
+                            {
+                                spawnSlimes = true;
+                                bossSpawn = true;
+                                
+                                bossSlimePosList.Remove(bossSlime);
+                                hPPosList.Add(bossSlime);
+                                BossKills += 1;
+                            }
                         }
                     }
-                }
-                for (int i = 0; i < Globals.BulletPosRightList.Count; i++)
-                {
-                    Globals.RecBullet = new Rectangle((int)Globals.BulletPosRightList[i].X, (int)Globals.BulletPosRightList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
-                    if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
+                    for (int i = 0; i < Globals.BulletPosRightList.Count; i++)
                     {
-                        Globals.BossHP -= 5;
-                        Globals.BossHits += 1;
+                        Globals.RecBullet = new Rectangle((int)Globals.BulletPosRightList[i].X, (int)Globals.BulletPosRightList[i].Y, Globals.Bullet.Width * 2, Globals.Bullet.Height * 2);
+                        if (Globals.RecBossSlime.Intersects(Globals.RecBullet) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 300)))
+                        {
+                            Globals.BossHP -= 5;
+                            Globals.BossHits += 1;
+                            timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
+
+                            if (Globals.BossHP <= 0)
+                            {
+                                bossSlimePosList.Remove(bossSlime);
+                                hPPosList.Add(bossSlime);
+                                BossKills += 1;
+                            }
+                        }
+                    }
+
+                    if (Globals.RecIlluminati.Intersects(Globals.RecBossSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 500)))
+                    {
+                        Globals.Health -= 5;
                         timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
-                        
-                        if (Globals.BossHP <= 0)
-                        {
-                            bossSlimePosList.Remove(bossSlime);
-                            hPPosList.Add(bossSlime);
-                            BossKills += 1;
-                        }
                     }
+
+
                 }
-
-                if (Globals.RecIlluminati.Intersects(Globals.RecBossSlime) && (gameTime.TotalGameTime.TotalMilliseconds > (timeSinceLastDamage + 500)))
-                {
-                    Globals.Health -= 5;
-                    timeSinceLastDamage = gameTime.TotalGameTime.TotalMilliseconds;
-                }
-
-
             }
 
 
@@ -269,23 +303,24 @@ namespace EttEgetSpel
                     Globals.SlimeSpeedList[i] = tempSpeed;
                 }
             }
-
+            
             for (int i = 0; i < bossSlimePosList.Count; i++)
             {
-                if ((bossSlimePosList[i].Y >= (Globals.WindowHeight - Globals.BossSlime.Height * 3) || bossSlimePosList[i].Y <= 0))
+                if ((bossSlimePosList[i].Y >= (Globals.WindowHeight - Globals.BossSlime.Height) || bossSlimePosList[i].Y <= 0))
                 {
                     tempBossSpeed.X = Globals.BossSlimeSpeedList[i].X;
                     tempBossSpeed.Y = -Globals.BossSlimeSpeedList[i].Y;
                     Globals.BossSlimeSpeedList[i] = tempBossSpeed;
 
                 }
-                if ((bossSlimePosList[i].X >= (Globals.WindowWidth - Globals.BossSlime.Width * 3) || bossSlimePosList[i].X <= 0))
+                if ((bossSlimePosList[i].X >= (Globals.WindowWidth - Globals.BossSlime.Width) || bossSlimePosList[i].X <= 0))
                 {
                     tempBossSpeed.X = -Globals.BossSlimeSpeedList[i].X;
                     tempBossSpeed.Y = Globals.BossSlimeSpeedList[i].Y;
                     Globals.BossSlimeSpeedList[i] = tempBossSpeed;
                 }
             }
+            
             //bossSlimeSpeed.X = 2f;
             //bossSlimeSpeed.Y = 2f;
 
@@ -342,9 +377,23 @@ namespace EttEgetSpel
 
             }
             
-            if (keyboardState.IsKeyDown(Keys.Space))
+            if (keyboardState.IsKeyDown(Keys.Space) && Globals.Start == false)
             {
                 Globals.Start = true;
+                
+                foreach(Vector2 slime in slimePosList.ToList()) 
+                {
+                    slimePosList.Remove(slime);
+                    Globals.SlimeSpeedList.Remove(slime);
+                }
+                foreach(Vector2 boss in bossSlimePosList.ToList())
+                {
+                    bossSlimePosList.Remove(boss);
+                    Globals.BossSlimeSpeedList.Remove(boss);
+                }
+                ;
+                bossSpawn = true;
+                spawnSlimes = true;
             }
 
             if (Globals.Health > 0 && Globals.Start == true)
@@ -361,11 +410,7 @@ namespace EttEgetSpel
                     spriteBatch.Draw(Globals.Slime, new Rectangle(slimePos.ToPoint(), new Point(50, 50)), Color.White);
 
                 }
-                foreach (Vector2 bossSlimePos in bossSlimePosList)
-                {
-                    spriteBatch.Draw(Globals.BossSlime, bossSlimePos, Color.White);
-                }
-
+               
                 foreach (Vector2 potion in hPPosList)
                 {
                     spriteBatch.Draw(HP, potion , Color.White);
@@ -379,19 +424,42 @@ namespace EttEgetSpel
                 {
                     spriteBatch.Draw(Globals.BulletRight, bulletsRight, Color.White);
                 }
+                if(slimePosList.Count == 0) 
+                {
+                    foreach (Vector2 bossSlimePos in bossSlimePosList)
+                    {
+                        spriteBatch.Draw(Globals.BossSlime, bossSlimePos, Color.White);
+                    }
+
+                }
                 spriteBatch.DrawString(gameFont, "BitCoins: " + points, new Vector2(10, 10), Color.White);
                 spriteBatch.DrawString(gameFont, "Bullets Up: " + Globals.BulletPosList.Count(), new Vector2(10, 30), Color.White);
                 spriteBatch.DrawString(gameFont, "Bullets Right: " + Globals.BulletPosRightList.Count(), new Vector2(10, 90), Color.White);
                 spriteBatch.Draw(healthBarTex, new Rectangle(10, Globals.WindowHeight - (Globals.Health * 2 + 10), 20, +Globals.Health * 2), Color.Red);
-                spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.DeepPink);
+                if(slimePosList.Count == 0) {
+                    spriteBatch.Draw(healthBarTex, new Rectangle(Globals.WindowWidth - 10, Globals.WindowHeight - (Globals.BossHP * 2 + 10), 20, +Globals.BossHP * 2), Color.DeepPink);
+                }
+                
                 spriteBatch.DrawString(gameFont, "Kills: " + kills, new Vector2(10, 50), Color.White);
                 spriteBatch.DrawString(gameFont, "BossKills: " + BossKills, new Vector2(10, 70), Color.White);
                 spriteBatch.DrawString(gameFont, "BossHits: " + Globals.BossHits, new Vector2(10, 110), Color.White);
+                spriteBatch.DrawString(gameFont, "Health: " + Globals.Health, new Vector2(10, 130), Color.White);
+                spriteBatch.DrawString(gameFont, "Enemys left: " + slimePosList.Count, new Vector2(10, 150), Color.White);
+                spriteBatch.DrawString(gameFont, "SlimeSpawn: " + spawnSlimes, new Vector2(10, 170), Color.White);
+                spriteBatch.DrawString(gameFont, "BossSpawn: " + bossSpawn, new Vector2(10, 190), Color.White);
+
 
 
             }
             else if (Globals.Health <= 0 && Globals.Start == true) 
             {
+                if (keyboardState.IsKeyDown(Keys.Enter))
+                {
+                    Globals.Start = false;
+                    Globals.Health = 100;
+
+
+                }
                 GraphicsDevice.Clear(Color.DarkGray);
                 Vector2 gameOverPos = new Vector2();
                 spriteBatch.Draw(GameOver, new Rectangle(Globals.WindowWidth / 2 - 40, Globals.WindowHeight - 300, 100, 100), Color.Red);

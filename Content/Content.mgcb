@@ -37,7 +37,7 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Bit Coin sprite.png
 
-#begin Sprites/BossSlime.png
+#begin Sprites/BossSlime2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,7 +47,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/BossSlime.png
+/build:Sprites/BossSlime2.png
 
 #begin Sprites/BulletGreen.png
 /importer:TextureImporter

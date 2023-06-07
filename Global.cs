@@ -9,7 +9,7 @@ using System.Security.Principal;
 public static class Globals
 {
     static Vector2 illuminatiPos = new Vector2(0, 0), gameOverPos = new Vector2(0, 0), hPPos = new Vector2(0, 0), bossSlimePos = new Vector2(0, 0), illuminatiSpeed, coin_pos = new Vector2(0, 0), bulletPos = new Vector2(0, 0), bulletSpeed, bulletSpeedRight;
-    static int windowWidth, windowHeight, health = 100, stHP, bossHP = 200, bossHits = 0;
+    static int windowWidth, windowHeight, health = 100, stHP, bossHP = 400, bossHits = 0;
     static Texture2D illuminati, coin, slime, bullet, bulletRight, startSpace, backgroundMap, bossSlime;
     static Rectangle recIlluminati, recCoin, recSlime, recBullet, recBossSlime, recHP;
     static List<Vector2> bulletPosList = new List<Vector2>();
